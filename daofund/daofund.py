@@ -76,3 +76,15 @@ class DaoFund(IconScoreBase):
     @payable
     def fallback(self):
         pass
+
+    @eventlog(indexed=1)
+    def AdminAdded(self, _address: Address):
+        pass
+
+    @eventlog(indexed=1)
+    def AdminRemoved(self, _address: Address):
+        pass
+
+    @eventlog(indexed=1)
+    def FundTransferred(self, _address: Address, note: str):
+        pass
