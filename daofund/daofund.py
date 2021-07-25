@@ -73,6 +73,22 @@ class DaoFund(IconScoreBase):
         """
         pass
 
+    @external
+    def withdraw_fund(self, _address: Address, _amount: int, _memo: str):
+        if self.msg.sender not in self.admins:
+            revert(f'{TAG}: Only admins can run this method.')
+
+        _available_amount = self.icx.get_balance(self.address)
+        if _available_amount >= _amount:
+            try:
+                self.icx.transfer(_address, _amount)
+                self.FundTransferred(_address, f"{_amount} transferred to {_address} for {_memo}")
+            except BaseException as e:
+                revert(f"{TAG} : Network problem. Claiming Reward{e}")
+
+        else:
+            revert(f"{TAG} :Not Enough balance. Available Balance = {_available_amount}.")
+
     @payable
     def fallback(self):
         pass
