@@ -44,12 +44,12 @@ class DaoFund(IconScoreBase):
         if self.msg.sender != self.owner:
             revert(f'{TAG}: Only admins can set new admins.')
 
-        if _admin == self.owner:
-            revert(f'{TAG}: Owner address cannot be removed from the admins list.')
-
         if _admin not in self.admins:
             self.admins.put(_admin)
             self.AdminAdded(_admin)
+
+        else:
+            revert(f'{TAG}: {_admin} is already on admin list.')
 
     @external
     def remove_admin(self, _admin: Address):
