@@ -93,7 +93,7 @@ class DaoFund(IconScoreBase):
                 self.icx.transfer(_address, _amount)
                 self.FundTransferred(_address, f"{_amount} transferred to {_address} for {_memo}")
             except BaseException as e:
-                revert(f"{TAG} : Network problem. Claiming Reward{e}")
+                revert(f"{TAG} : Network problem. Claiming Reward. Reason: {e}")
 
         else:
             revert(f"{TAG} :Not Enough balance. Available Balance = {_available_amount}.")
