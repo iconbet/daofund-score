@@ -56,6 +56,9 @@ class DaoFund(IconScoreBase):
         if self.msg.sender != self.owner:
             revert(f'{TAG}: Only admins can remove the admins.')
 
+        if _admin == self.owner:
+            revert(f'{TAG}: Owner address cannot be removed from the admins list.')
+
         if _admin in self.admins:
             remove_array_item(self.admins, _admin)
             self.AdminRemoved(_admin)
