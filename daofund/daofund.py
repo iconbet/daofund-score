@@ -67,12 +67,12 @@ class DaoFund(IconScoreBase):
             revert(f'{TAG}: {_admin} not in Admins List')
 
     @external(readonly=True)
-    def get_admins(self):
+    def get_admins(self) -> list:
         return [_address for _address in self.admins]
 
     @external
     @payable
-    def add_fund(self):
+    def add_fund(self) -> None:
         """
         Add fund to the daoFund wallet
         :return:
@@ -80,7 +80,7 @@ class DaoFund(IconScoreBase):
         pass
 
     @external
-    def withdraw_fund(self, _address: Address, _amount: int, _memo: str):
+    def withdraw_fund(self, _address: Address, _amount: int, _memo: str) -> None:
         if self.msg.sender not in self.admins:
             revert(f'{TAG}: Only admins can run this method.')
 
