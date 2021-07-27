@@ -89,8 +89,9 @@ class DaoFund(IconScoreBase):
             revert(f"{TAG} :Not Enough balance. Available Balance = {_available_amount}.")
 
         try:
-            self.withdraw_count.set(self.withdraw_count.get() + 1)
-            _withdraw_count: int = self.withdraw_count.get()
+            _count: int = self.withdraw_count.get()
+            _withdraw_count = _count + 1
+            self.withdraw_count.set(_withdraw_count)
             self.withdraw_record[_withdraw_count]['withdraw_amount'] = str(_amount)
             self.withdraw_record[_withdraw_count]['withdraw_address'] = str(_address)
             self.withdraw_record[_withdraw_count]['withdraw_memo'] = _memo
