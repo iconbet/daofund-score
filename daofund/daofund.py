@@ -85,21 +85,20 @@ class DaoFund(IconScoreBase):
             revert(f'{TAG}: Only admins can run this method.')
 
         _available_amount = self.icx.get_balance(self.address)
-        if _available_amount >= _amount:
-            try:
-                self.withdraw_count.set(self.withdraw_count.get() + 1)
-                _withdraw_count: int = self.withdraw_count.get()
-                self.withdraw_record[_withdraw_count]['withdraw_amount'] = str(_amount)
-                self.withdraw_record[_withdraw_count]['withdraw_address'] = str(_address)
-                self.withdraw_record[_withdraw_count]['withdraw_memo'] = _memo
-                self.withdraw_record[_withdraw_count]['withdraw_timestamp'] = str(self.now() // 10 ** 6)
-                self.icx.transfer(_address, _amount)
-                self.FundTransferred(_address, f"{_amount} transferred to {_address} for {_memo}")
-            except BaseException as e:
-                revert(f"{TAG} : Network problem. Claiming Reward. Reason: {e}")
-
-        else:
+        if _available_amount < _amount:
             revert(f"{TAG} :Not Enough balance. Available Balance = {_available_amount}.")
+
+        try:
+            self.withdraw_count.set(self.withdraw_count.get() + 1)
+            _withdraw_count: int = self.withdraw_count.get()
+            self.withdraw_record[_withdraw_count]['withdraw_amount'] = str(_amount)
+            self.withdraw_record[_withdraw_count]['withdraw_address'] = str(_address)
+            self.withdraw_record[_withdraw_count]['withdraw_memo'] = _memo
+            self.withdraw_record[_withdraw_count]['withdraw_timestamp'] = str(self.now() // 10 ** 6)
+            self.icx.transfer(_address, _amount)
+            self.FundTransferred(_address, f"{_amount} transferred to {_address} for {_memo}")
+        except BaseException as e:
+            revert(f"{TAG} : Network problem. Claiming Reward. Reason: {e}")
 
     @external(readonly=True)
     def get_withdraw_count(self) -> int:
