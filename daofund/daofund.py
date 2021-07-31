@@ -116,8 +116,11 @@ class DaoFund(IconScoreBase):
         elif _end == 0:
             _end = min(wd_count, _start + batch_size)
         elif _start == 0:
-            _start = max(1, _end - batch_size)
-        elif _end > wd_count:
+            _start = max(1, _end - _batch_size)
+
+        if wd_count == 0:
+            return [f'No records available']
+        if _end > wd_count:
             _end = wd_count
 
         if not (1 <= _start < wd_count) or not (1 < _end <= wd_count):
