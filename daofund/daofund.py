@@ -106,15 +106,16 @@ class DaoFund(IconScoreBase):
         return self.withdraw_count.get()
 
     @external(readonly=True)
-    def get_withdraw_records(self, _start: int, _end: int) -> list:
+    def get_withdraw_records(self, _start: int, _end: int, _batch_size: int = 20) -> list:
         wd_count: int = self.withdraw_count.get()
-        batch_size = 10
+        if _batch_size > 100:
+            _batch_size = 100
 
         if _start == 0 and _end == 0:
             _end = wd_count
-            _start = max(1, _end - batch_size)
+            _start = max(1, _end - _batch_size)
         elif _end == 0:
-            _end = min(wd_count, _start + batch_size)
+            _end = min(wd_count, _start + _batch_size)
         elif _start == 0:
             _start = max(1, _end - _batch_size)
 
@@ -127,8 +128,8 @@ class DaoFund(IconScoreBase):
             return [f"[{_start},{_end}] must be in range [1, {wd_count}]."]
         if _start >= _end:
             return ["Start must not be greater than or equal to end."]
-        if _end - _start > batch_size:
-            revert(f"Maximum allowed range is {batch_size}")
+        if _end - _start > _batch_size:
+            return [f"Maximum allowed range is {_batch_size}"]
 
         return [{"withdraw_address": self.withdraw_record[_withdraw]['withdraw_address'],
                  "withdraw_timestamp": self.withdraw_record[_withdraw]['withdraw_timestamp'],
