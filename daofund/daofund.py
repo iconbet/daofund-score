@@ -92,6 +92,7 @@ class DaoFund(IconScoreBase):
             _count: int = self.withdraw_count.get()
             _withdraw_count = _count + 1
             self.withdraw_count.set(_withdraw_count)
+            _withdraw_count = str(_withdraw_count)
             self.withdraw_record[_withdraw_count]['withdraw_amount'] = str(_amount)
             self.withdraw_record[_withdraw_count]['withdraw_address'] = str(_address)
             self.withdraw_record[_withdraw_count]['withdraw_memo'] = _memo
@@ -131,22 +132,22 @@ class DaoFund(IconScoreBase):
         if _end - _start > _batch_size:
             return [f"Maximum allowed range is {_batch_size}"]
 
-        return [{"withdraw_address": self.withdraw_record[_withdraw]['withdraw_address'],
-                 "withdraw_timestamp": self.withdraw_record[_withdraw]['withdraw_timestamp'],
-                 "withdraw_reason": self.withdraw_record[_withdraw]['withdraw_memo'],
-                 "withdraw_amount": self.withdraw_record[_withdraw]['withdraw_amount']}
+        return [{"withdraw_address": self.withdraw_record[str(_withdraw)]['withdraw_address'],
+                 "withdraw_timestamp": self.withdraw_record[str(_withdraw)]['withdraw_timestamp'],
+                 "withdraw_reason": self.withdraw_record[str(_withdraw)]['withdraw_memo'],
+                 "withdraw_amount": self.withdraw_record[str(_withdraw)]['withdraw_amount']}
                 for _withdraw in range(_start, _end + 1)]
 
     @external(readonly=True)
     def get_withdraw_record_by_index(self, _idx: int) -> dict:
-        _count = self.withdraw_count.get()
+        _count: int = self.withdraw_count.get()
         if _idx <= 0 or _idx > _count:
             return {-1: f"{_idx} must be in range [{1}, {_count}]."}
 
-        return {"withdraw_address": self.withdraw_record[_idx]['withdraw_address'],
-                "withdraw_timestamp": self.withdraw_record[_idx]['withdraw_timestamp'],
-                "withdraw_reason": self.withdraw_record[_idx]['withdraw_memo'],
-                "withdraw_amount": self.withdraw_record[_idx]['withdraw_amount']}
+        return {"withdraw_address": self.withdraw_record[str(_idx)]['withdraw_address'],
+                "withdraw_timestamp": self.withdraw_record[str(_idx)]['withdraw_timestamp'],
+                "withdraw_reason": self.withdraw_record[str(_idx)]['withdraw_memo'],
+                "withdraw_amount": self.withdraw_record[str(_idx)]['withdraw_amount']}
 
     @payable
     def fallback(self):
