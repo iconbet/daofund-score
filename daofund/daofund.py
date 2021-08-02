@@ -136,9 +136,9 @@ class DaoFund(IconScoreBase):
 
     @external(readonly=True)
     def get_withdraw_record_by_index(self, _idx: int) -> dict:
-        _count = self.withdraw_count.get()
+        _count: int = self.withdraw_count.get()
         if _idx <= 0 or _idx > _count:
-            return {-1: f"{_idx} must be in range [{1}, {_count}]."}
+            return {"-1": f"{_idx} must be in range [{1}, {_count}]."}
 
         return {"withdraw_address": self.withdraw_record[_idx]['withdraw_address'],
                 "withdraw_timestamp": self.withdraw_record[_idx]['withdraw_timestamp'],
